@@ -31,16 +31,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upload to Cloudinary
+    // Upload to Cloudinary using signed upload
+    // For unsigned upload, you need to create an upload preset first
     const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
     
-    const formData = new FormData();
-    formData.append('file', `data:${imageType};base64,${imageBase64}`);
-    formData.append('upload_preset', 'ml_default'); // หรือใช้ unsigned upload preset
+    // Use signed upload with API secret
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const params = new URLSearchParams();
+    params.append('file', `data:${imageType};base64,${imageBase64}`);
+    params.append('timestamp', timestamp.toString());
+    
+    // Generate signature for signed upload
+    const crypto = await import('crypto');
+    const signatureString = `timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
+    const signature = crypto.createHash('sha1').update(signatureString).digest('hex');
+    params.append('api_key', CLOUDINARY_API_KEY);
+    params.append('signature', signature);
 
     const response = await fetch(uploadUrl, {
       method: 'POST',
-      body: formData,
+      body: params,
     });
 
     const data = await response.json();
