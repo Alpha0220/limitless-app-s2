@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     
     // Generate signature for signed upload
     const signatureString = `timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
-    const signature = crypto.createHash('sha1').update(signatureString).digest('hex');
+    const signature = createHash('sha1').update(signatureString).digest('hex');
     params.append('api_key', CLOUDINARY_API_KEY);
     params.append('signature', signature);
 
