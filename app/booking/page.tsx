@@ -123,6 +123,11 @@ export default function BookingPage() {
       return;
     }
     
+    if (!receiptFile) {
+      setError('กรุณาแนบรูปใบเสร็จที่ทำการชำระเงิน');
+      return;
+    }
+    
     // Note: Receipt upload is optional for now since Airtable doesn't support data URLs
     // In production, implement file upload to storage service (S3, Cloudinary, etc.)
 
@@ -402,16 +407,17 @@ export default function BookingPage() {
               />
             </div>
 
-            {/* Receipt Upload - Optional for now */}
+            {/* Receipt Upload - Required */}
             <div>
               <label htmlFor="receipt" className="block text-sm font-medium text-gray-700 mb-2">
-                แนบรูปใบเสร็จที่ทำการชำระเงิน <span className="text-gray-500 text-xs">(ไม่บังคับ)</span>
+                แนบรูปใบเสร็จที่ทำการชำระเงิน <span className="text-red-500">*</span>
               </label>
               <input
                 type="file"
                 id="receipt"
                 accept="image/*"
                 onChange={handleFileChange}
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
               />
               {receiptPreview && (
@@ -425,7 +431,7 @@ export default function BookingPage() {
                 </div>
               )}
               <p className="mt-2 text-xs text-gray-500">
-                หมายเหตุ: ใบเสร็จจะถูกอัปโหลดไปยัง Imgur และบันทึกลง Airtable
+                หมายเหตุ: ใบเสร็จเป็นข้อมูลบังคับ จะถูกอัปโหลดไปยัง Cloudinary/Imgur และบันทึกลง Airtable
               </p>
             </div>
 
