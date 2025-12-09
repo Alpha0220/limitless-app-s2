@@ -46,12 +46,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Add start and end times if provided
-    if (startTime) {
-      fields['Start Time'] = startTime;
-    }
-    if (endTime) {
-      fields['End Time'] = endTime;
-    }
+    // Note: These fields are optional - only add if they exist in Airtable
+    // If you get UNKNOWN_FIELD_NAME error, remove these fields from Airtable or add them to your table
+    // For now, we'll skip these fields to avoid errors
+    // if (startTime) {
+    //   fields['Start Time'] = startTime;
+    // }
+    // if (endTime) {
+    //   fields['End Time'] = endTime;
+    // }
 
     // Add Status - make sure "Pending" option exists in Airtable Status field
     // If you get INVALID_MULTIPLE_CHOICE_OPTIONS error, add "Pending" option in Airtable
@@ -165,6 +168,17 @@ export async function POST(request: NextRequest) {
         { 
           error: 'ไม่สามารถบันทึกวันที่ได้',
           details: 'กรุณาตรวจสอบว่า Field "Date" มีอยู่ใน Airtable และเป็น Type "Date" หรือ "Single line text" (ถ้าเป็น Date field ต้องเป็น format YYYY-MM-DD)'
+        },
+        { status: 422 }
+      );
+    }
+    
+    if (error?.error === 'UNKNOWN_FIELD_NAME') {
+      const fieldName = error?.message?.match(/Unknown field name: "([^"]+)"/)?.[1] || 'unknown';
+      return NextResponse.json(
+        { 
+          error: `Field "${fieldName}" ไม่มีใน Airtable`,
+          details: `กรุณาตรวจสอบว่า Field "${fieldName}" มีอยู่ใน Airtable Table "Bookings" หรือลบ field นี้จากการส่งข้อมูล`
         },
         { status: 422 }
       );
