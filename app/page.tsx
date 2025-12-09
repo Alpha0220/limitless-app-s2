@@ -28,6 +28,12 @@ const getMaxDate = () => {
   return maxDate.toISOString().split('T')[0];
 };
 
+interface BookingType {
+  id: string;
+  name: string;
+  additionalPricePerHour: number;
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -36,17 +42,44 @@ export default function HomePage() {
   const [confirmedTimeSlot, setConfirmedTimeSlot] = useState<string>('');
   const [availableRooms, setAvailableRooms] = useState<string[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
+  const [bookingTypes, setBookingTypes] = useState<BookingType[]>([]);
+  const [selectedBookingType, setSelectedBookingType] = useState<string>('');
   const [isLoadingRooms, setIsLoadingRooms] = useState<boolean>(false);
   const [roomError, setRoomError] = useState<string | null>(null);
+  const [isLoadingBookingTypes, setIsLoadingBookingTypes] = useState<boolean>(false);
 
   const minDate = getMinDate();
   const maxDate = getMaxDate();
+
+  // Fetch booking types on component mount
+  useEffect(() => {
+    const fetchBookingTypes = async () => {
+      setIsLoadingBookingTypes(true);
+      try {
+        const response = await fetch('/api/booking-types');
+        const data = await response.json();
+        
+        if (response.ok) {
+          setBookingTypes(data.bookingTypes || []);
+        } else {
+          console.error('Error fetching booking types:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching booking types:', error);
+      } finally {
+        setIsLoadingBookingTypes(false);
+      }
+    };
+    
+    fetchBookingTypes();
+  }, []);
 
   useEffect(() => {
     // Reset confirmed time slot when date or times change
     setConfirmedTimeSlot('');
     setAvailableRooms([]);
     setSelectedRoom('');
+    setSelectedBookingType('');
   }, [selectedDate, startTime, endTime]);
 
   const handleConfirmTime = async () => {
@@ -90,8 +123,12 @@ export default function HomePage() {
   const handleContinue = () => {
     if (confirmedTimeSlot && selectedRoom && selectedDate) {
       // Store selection in sessionStorage to pass to next page
+      const selectedType = bookingTypes.find(bt => bt.id === selectedBookingType);
       sessionStorage.setItem('bookingData', JSON.stringify({
         date: selectedDate,
+        bookingType: selectedBookingType,
+        bookingTypeName: selectedType?.name || '',
+        bookingTypeAdditionalPrice: selectedType?.additionalPricePerHour || 0,
         timeSlot: confirmedTimeSlot,
         startTime,
         endTime,
@@ -192,8 +229,40 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Available Rooms */}
+          {/* Booking Type Selection */}
           {confirmedTimeSlot && (
+            <div className="mb-6">
+              <label htmlFor="bookingType" className="block text-sm font-medium text-gray-700 mb-2">
+                เลือกประเภทการจอง
+              </label>
+              {isLoadingBookingTypes ? (
+                <div className="text-center py-4 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500 text-sm">กำลังโหลดประเภทการจอง...</p>
+                </div>
+              ) : bookingTypes.length > 0 ? (
+                <select
+                  id="bookingType"
+                  value={selectedBookingType}
+                  onChange={(e) => setSelectedBookingType(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                >
+                  <option value="">-- เลือกประเภทการจอง --</option>
+                  {bookingTypes.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <div className="text-center py-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-yellow-700 text-sm">ไม่พบข้อมูลประเภทการจอง</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Available Rooms */}
+          {confirmedTimeSlot && selectedBookingType && (
             <div className="mb-8">
               <label className="block text-sm font-medium text-gray-700 mb-4">
                 ห้องที่ว่างในช่วงเวลา {confirmedTimeSlot}
@@ -251,7 +320,7 @@ export default function HomePage() {
           )}
 
           {/* Continue Button */}
-          {confirmedTimeSlot && selectedRoom && (
+          {confirmedTimeSlot && selectedBookingType && selectedRoom && (
             <div className="mt-8">
               <button
                 onClick={handleContinue}
