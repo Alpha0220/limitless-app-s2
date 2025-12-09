@@ -109,9 +109,19 @@ export async function GET(request: NextRequest) {
               if (!recordDate) return false;
               
               // Handle different date formats
-              const recordDateStr = typeof recordDate === 'string' 
-                ? recordDate 
-                : new Date(recordDate as string).toISOString().split('T')[0];
+              let recordDateStr: string;
+              if (typeof recordDate === 'string') {
+                recordDateStr = recordDate;
+              } else if (recordDate instanceof Date) {
+                recordDateStr = recordDate.toISOString().split('T')[0];
+              } else {
+                // Try to convert to string
+                try {
+                  recordDateStr = new Date(String(recordDate)).toISOString().split('T')[0];
+                } catch {
+                  return false;
+                }
+              }
               
               const normalizedRecordDate = recordDateStr.replace(/\//g, '-');
               const normalizedQueryDate = dateValue;
