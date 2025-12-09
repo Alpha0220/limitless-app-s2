@@ -140,18 +140,18 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 px-3 sm:py-8 sm:px-4 md:py-12 md:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Queue Master</h1>
-          <p className="text-lg text-gray-600">ระบบจองห้องซ้อมดนตรี</p>
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">Queue Master</h1>
+          <p className="text-sm sm:text-base md:text-lg text-gray-600">ระบบจองห้องซ้อมดนตรี</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">เลือกช่วงเวลาและห้อง</h2>
+        <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 md:p-8">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">เลือกช่วงเวลาและห้อง</h2>
 
           {/* Date Selection */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
               เลือกวันที่
             </label>
@@ -162,17 +162,17 @@ export default function HomePage() {
               onChange={(e) => setSelectedDate(e.target.value)}
               min={minDate}
               max={maxDate}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+              className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-lg"
             />
           </div>
 
           {/* Time Selection */}
           {selectedDate && (
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 เลือกเวลา
               </label>
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                 <div>
                   <label htmlFor="startTime" className="block text-xs text-gray-600 mb-1">
                     เวลาเริ่มต้น
@@ -181,7 +181,7 @@ export default function HomePage() {
                     id="startTime"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-lg"
                   >
                     <option value="">-- เลือกเวลา --</option>
                     {TIME_OPTIONS.map((time) => (
@@ -199,7 +199,7 @@ export default function HomePage() {
                     id="endTime"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-lg"
                   >
                     <option value="">-- เลือกเวลา --</option>
                     {TIME_OPTIONS.map((time) => (
@@ -214,14 +214,14 @@ export default function HomePage() {
                 <button
                   onClick={handleConfirmTime}
                   disabled={isLoadingRooms}
-                  className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-indigo-600 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoadingRooms ? 'กำลังตรวจสอบ...' : 'ยืนยันเวลา'}
                 </button>
               )}
               {confirmedTimeSlot && (
-                <div className="mt-4 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
-                  <p className="text-sm text-indigo-700">
+                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                  <p className="text-xs sm:text-sm text-indigo-700">
                     <span className="font-semibold">เวลาที่เลือก:</span> {confirmedTimeSlot}
                   </p>
                 </div>
@@ -231,20 +231,20 @@ export default function HomePage() {
 
           {/* Booking Type Selection */}
           {confirmedTimeSlot && (
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <label htmlFor="bookingType" className="block text-sm font-medium text-gray-700 mb-2">
                 เลือกประเภทการจอง
               </label>
               {isLoadingBookingTypes ? (
-                <div className="text-center py-4 bg-gray-50 rounded-lg">
-                  <p className="text-gray-500 text-sm">กำลังโหลดประเภทการจอง...</p>
+                <div className="text-center py-3 sm:py-4 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500 text-xs sm:text-sm">กำลังโหลดประเภทการจอง...</p>
                 </div>
               ) : bookingTypes.length > 0 ? (
                 <select
                   id="bookingType"
                   value={selectedBookingType}
                   onChange={(e) => setSelectedBookingType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-lg"
                 >
                   <option value="">-- เลือกประเภทการจอง --</option>
                   {bookingTypes.map((type) => (
@@ -263,26 +263,26 @@ export default function HomePage() {
 
           {/* Available Rooms */}
           {confirmedTimeSlot && selectedBookingType && (
-            <div className="mb-8">
-              <label className="block text-sm font-medium text-gray-700 mb-4">
+            <div className="mb-6 sm:mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-3 sm:mb-4">
                 ห้องที่ว่างในช่วงเวลา {confirmedTimeSlot}
               </label>
               {isLoadingRooms ? (
-                <div className="text-center py-8 bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">กำลังตรวจสอบความพร้อมของห้อง...</p>
+                <div className="text-center py-6 sm:py-8 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500 text-sm sm:text-base">กำลังตรวจสอบความพร้อมของห้อง...</p>
                 </div>
               ) : roomError ? (
-                <div className="text-center py-8 bg-red-50 rounded-lg border border-red-200">
-                  <p className="text-red-700">{roomError}</p>
+                <div className="text-center py-6 sm:py-8 bg-red-50 rounded-lg border border-red-200">
+                  <p className="text-red-700 text-sm sm:text-base px-2">{roomError}</p>
                   <button
                     onClick={handleConfirmTime}
-                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    className="mt-3 sm:mt-4 px-4 py-2 text-sm sm:text-base bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                   >
                     ลองอีกครั้ง
                   </button>
                 </div>
               ) : availableRooms.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {availableRooms.map((roomId) => {
                     const room = ROOMS.find(r => r.id === roomId);
                     const isSelected = selectedRoom === roomId;
@@ -290,21 +290,21 @@ export default function HomePage() {
                       <button
                         key={roomId}
                         onClick={() => setSelectedRoom(roomId)}
-                        className={`p-6 rounded-lg border-2 transition-all ${
+                        className={`p-4 sm:p-6 rounded-lg border-2 transition-all ${
                           isSelected
                             ? 'border-indigo-500 bg-indigo-50 shadow-md'
                             : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
                         }`}
                       >
                         <div className="text-center">
-                          <div className={`text-2xl mb-2 ${isSelected ? 'text-indigo-600' : 'text-gray-600'}`}>
+                          <div className={`text-xl sm:text-2xl mb-1 sm:mb-2 ${isSelected ? 'text-indigo-600' : 'text-gray-600'}`}>
                             🎵
                           </div>
-                          <div className={`font-semibold ${isSelected ? 'text-indigo-700' : 'text-gray-700'}`}>
+                          <div className={`font-semibold text-sm sm:text-base ${isSelected ? 'text-indigo-700' : 'text-gray-700'}`}>
                             {room?.name}
                           </div>
                           {isSelected && (
-                            <div className="mt-2 text-sm text-indigo-600">✓ เลือกแล้ว</div>
+                            <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-indigo-600">✓ เลือกแล้ว</div>
                           )}
                         </div>
                       </button>
@@ -312,8 +312,8 @@ export default function HomePage() {
                   })}
                 </div>
               ) : (
-                <div className="text-center py-8 bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">ไม่มีห้องว่างในช่วงเวลานี้</p>
+                <div className="text-center py-6 sm:py-8 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500 text-sm sm:text-base">ไม่มีห้องว่างในช่วงเวลานี้</p>
                 </div>
               )}
             </div>
@@ -321,10 +321,10 @@ export default function HomePage() {
 
           {/* Continue Button */}
           {confirmedTimeSlot && selectedBookingType && selectedRoom && (
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <button
                 onClick={handleContinue}
-                className="w-full bg-indigo-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl"
+                className="w-full bg-indigo-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-base sm:text-lg hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl"
               >
                 ดำเนินการต่อ →
               </button>

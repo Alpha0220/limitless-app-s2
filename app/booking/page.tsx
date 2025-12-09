@@ -285,34 +285,34 @@ export default function BookingPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center py-12 px-4">
-        <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
-          <div className="text-6xl mb-4">🎵</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">บันทึกข้อมูลสำเร็จ!</h2>
-          <p className="text-gray-600 mb-4">ข้อมูลการจองห้องซ้อมดนตรีของคุณถูกบันทึกเรียบร้อยแล้ว</p>
-          <p className="text-sm text-gray-500">กำลังกลับไปหน้าแรก...</p>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center py-4 px-3 sm:py-8 sm:px-4 md:py-12 md:px-6">
+        <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 max-w-md w-full text-center mx-4">
+          <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🎵</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">บันทึกข้อมูลสำเร็จ!</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 px-2">ข้อมูลการจองห้องซ้อมดนตรีของคุณถูกบันทึกเรียบร้อยแล้ว</p>
+          <p className="text-xs sm:text-sm text-gray-500">กำลังกลับไปหน้าแรก...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 px-3 sm:py-8 sm:px-4 md:py-12 md:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">กรอกข้อมูลการจอง</h1>
-          <p className="text-lg text-gray-600">กรุณากรอกข้อมูลเพิ่มเติมเพื่อลงทะเบียนจองห้องซ้อมดนตรี</p>
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">กรอกข้อมูลการจอง</h1>
+          <p className="text-sm sm:text-base md:text-lg text-gray-600 px-2">กรุณากรอกข้อมูลเพิ่มเติมเพื่อลงทะเบียนจองห้องซ้อมดนตรี</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-xl p-8">
+        <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 md:p-8">
           {/* Display Selected Time and Room */}
-          <div className="mb-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
-            <h3 className="text-lg font-semibold text-indigo-900 mb-3">ข้อมูลการจองที่เลือก</h3>
-            <div className="space-y-2 text-gray-700">
+          <div className="mb-4 sm:mb-6 md:mb-8 p-4 sm:p-6 bg-indigo-50 rounded-lg border border-indigo-200">
+            <h3 className="text-base sm:text-lg font-semibold text-indigo-900 mb-2 sm:mb-3">ข้อมูลการจองที่เลือก</h3>
+            <div className="space-y-2 text-gray-700 text-sm sm:text-base">
               {bookingData.date && (
-                <div className="flex items-center">
-                  <span className="font-medium w-24">วันที่:</span>
-                  <span>{new Date(bookingData.date).toLocaleDateString('th-TH', {
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                  <span className="font-medium sm:w-24">วันที่:</span>
+                  <span className="break-words">{new Date(bookingData.date).toLocaleDateString('th-TH', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -321,17 +321,17 @@ export default function BookingPage() {
                 </div>
               )}
               {bookingData.bookingTypeName && (
-                <div className="flex items-center">
-                  <span className="font-medium w-24">ประเภท:</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                  <span className="font-medium sm:w-24">ประเภท:</span>
                   <span>{bookingData.bookingTypeName}</span>
                 </div>
               )}
-              <div className="flex items-center">
-                <span className="font-medium w-24">ช่วงเวลา:</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                <span className="font-medium sm:w-24">ช่วงเวลา:</span>
                 <span>{bookingData.timeSlot}</span>
               </div>
-              <div className="flex items-center">
-                <span className="font-medium w-24">ห้อง:</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                <span className="font-medium sm:w-24">ห้อง:</span>
                 <span>{bookingData.roomName}</span>
               </div>
             </div>
@@ -339,13 +339,13 @@ export default function BookingPage() {
 
           {/* Price Calculation */}
           {isLoadingPrice ? (
-            <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-gray-500 text-center">กำลังคำนวณราคา...</p>
+            <div className="mb-4 sm:mb-6 md:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-gray-500 text-center text-sm sm:text-base">กำลังคำนวณราคา...</p>
             </div>
           ) : hours > 0 && roomPrice > 0 && (
-            <div className="mb-8 p-6 bg-green-50 rounded-lg border border-green-200">
-              <h3 className="text-lg font-semibold text-green-900 mb-4">รายละเอียดการคำนวณราคา</h3>
-              <div className="space-y-3 text-gray-700">
+            <div className="mb-4 sm:mb-6 md:mb-8 p-4 sm:p-6 bg-green-50 rounded-lg border border-green-200">
+              <h3 className="text-base sm:text-lg font-semibold text-green-900 mb-3 sm:mb-4">รายละเอียดการคำนวณราคา</h3>
+              <div className="space-y-2 sm:space-y-3 text-gray-700 text-sm sm:text-base">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">จำนวนชั่วโมง:</span>
                   <span className="font-semibold">{hours.toFixed(2)} ชั่วโมง</span>
@@ -360,12 +360,12 @@ export default function BookingPage() {
                     <span className="font-semibold">{additionalPrice.toLocaleString('th-TH')} บาท/ชั่วโมง</span>
                   </div>
                 )}
-                <div className="border-t border-green-300 pt-3 mt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold">ยอดรวม:</span>
-                    <span className="text-xl font-bold text-green-700">{totalPrice.toLocaleString('th-TH')} บาท</span>
+                <div className="border-t border-green-300 pt-2 sm:pt-3 mt-2 sm:mt-3">
+                  <div className="flex justify-between items-center flex-wrap gap-1">
+                    <span className="text-sm sm:text-base font-semibold">ยอดรวม:</span>
+                    <span className="text-lg sm:text-xl font-bold text-green-700">{totalPrice.toLocaleString('th-TH')} บาท</span>
                   </div>
-                  <div className="text-xs text-gray-600 mt-2">
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 break-words">
                     ({hours.toFixed(2)} ชั่วโมง × {roomPrice.toLocaleString('th-TH')} บาท)
                     {additionalPrice > 0 && ` + (${hours.toFixed(2)} ชั่วโมง × ${additionalPrice.toLocaleString('th-TH')} บาท)`}
                   </div>
@@ -374,7 +374,27 @@ export default function BookingPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Bank Account Information */}
+          <div className="mb-4 sm:mb-6 md:mb-8 p-4 sm:p-6 bg-red-50 rounded-lg border-2 border-red-300">
+            <h3 className="text-base sm:text-lg font-semibold text-red-900 mb-2 sm:mb-3">ข้อมูลการโอนเงิน</h3>
+            <p className="text-red-800 font-medium mb-3 sm:mb-4 text-sm sm:text-base">กรุณาโอนเงิน และแนบใบเสร็จ</p>
+            <div className="space-y-2 text-red-900 text-sm sm:text-base">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                <span className="font-medium sm:w-32">เลขที่บัญชี:</span>
+                <span className="font-semibold text-base sm:text-lg break-all">405-487-2681</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                <span className="font-medium sm:w-32">ชื่อ:</span>
+                <span className="font-semibold break-words">นายณัฐพงศ์ นาคอุดม</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+                <span className="font-medium sm:w-32">ธนาคาร:</span>
+                <span className="font-semibold">ไทยพานิชย์</span>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* First Name */}
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -386,7 +406,7 @@ export default function BookingPage() {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-lg"
                 placeholder="กรุณากรอกชื่อ"
               />
             </div>
@@ -402,7 +422,7 @@ export default function BookingPage() {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-lg"
                 placeholder="กรุณากรอกนามสกุล"
               />
             </div>
@@ -418,11 +438,11 @@ export default function BookingPage() {
                 accept="image/*"
                 onChange={handleFileChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
               />
               {receiptPreview && (
-                <div className="mt-4">
-                  <p className="text-sm text-gray-600 mb-2">ตัวอย่างรูปภาพ:</p>
+                <div className="mt-3 sm:mt-4">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-2">ตัวอย่างรูปภาพ:</p>
                   <img
                     src={receiptPreview}
                     alt="Receipt preview"
@@ -443,18 +463,18 @@ export default function BookingPage() {
             )}
 
             {/* Submit Button */}
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 bg-gray-200 text-gray-700 py-4 px-6 rounded-lg font-semibold text-lg hover:bg-gray-300 transition-colors"
+                className="flex-1 bg-gray-200 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base md:text-lg hover:bg-gray-300 transition-colors"
               >
                 ← ย้อนกลับ
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-indigo-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-indigo-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base md:text-lg hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'กำลังบันทึก...' : 'บันทึกข้อมูล'}
               </button>
