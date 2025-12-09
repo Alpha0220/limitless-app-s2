@@ -188,6 +188,9 @@ export async function GET(request: NextRequest) {
           }
           
           // Now filter by time overlap in code
+          if (!records) {
+            records = [];
+          }
           const overlappingRecords: typeof records = records.filter(record => {
             const recordTimeSlot = record.get('Time Slot') as string;
             if (!recordTimeSlot) return false;
