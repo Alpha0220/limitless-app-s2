@@ -14,23 +14,18 @@ const ROOMS = [
   { id: 'room2', name: 'ห้องที่ 2' },
 ];
 
-// Generate date options (next 30 days)
-const generateDateOptions = () => {
-  const dates = [];
+// Get minimum date (today)
+const getMinDate = () => {
   const today = new Date();
-  for (let i = 0; i < 30; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    const dateStr = date.toISOString().split('T')[0];
-    const formattedDate = date.toLocaleDateString('th-TH', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    dates.push({ value: dateStr, label: formattedDate });
-  }
-  return dates;
+  return today.toISOString().split('T')[0];
+};
+
+// Get maximum date (30 days from today)
+const getMaxDate = () => {
+  const today = new Date();
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 30);
+  return maxDate.toISOString().split('T')[0];
 };
 
 // Mock availability data - in real app, this would come from API
@@ -57,7 +52,8 @@ export default function HomePage() {
   const [availableRooms, setAvailableRooms] = useState<string[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
 
-  const dateOptions = generateDateOptions();
+  const minDate = getMinDate();
+  const maxDate = getMaxDate();
 
   useEffect(() => {
     // Reset confirmed time slot when date or times change
@@ -111,19 +107,15 @@ export default function HomePage() {
             <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
               เลือกวันที่
             </label>
-            <select
+            <input
+              type="date"
               id="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
+              min={minDate}
+              max={maxDate}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
-            >
-              <option value="">-- เลือกวันที่ --</option>
-              {dateOptions.map((date) => (
-                <option key={date.value} value={date.value}>
-                  {date.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           {/* Time Selection */}
