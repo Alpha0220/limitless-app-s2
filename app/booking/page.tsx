@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 
 interface BookingData {
   date?: string;
+  bookingType?: string;
+  bookingTypeName?: string;
+  bookingTypeAdditionalPrice?: number;
   timeSlot: string;
   startTime?: string;
   endTime?: string;
@@ -12,9 +15,21 @@ interface BookingData {
   roomName: string;
 }
 
+interface RoomData {
+  id: string;
+  name: string;
+  pricePerHour: number;
+}
+
 export default function BookingPage() {
   const router = useRouter();
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
+  const [roomData, setRoomData] = useState<RoomData | null>(null);
+  const [hours, setHours] = useState<number>(0);
+  const [roomPrice, setRoomPrice] = useState<number>(0);
+  const [additionalPrice, setAdditionalPrice] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [isLoadingPrice, setIsLoadingPrice] = useState<boolean>(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
@@ -23,16 +38,68 @@ export default function BookingPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Calculate hours from start and end time
+  const calculateHours = (startTime: string, endTime: string): number => {
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
+    const startMinutes = startHour * 60 + startMin;
+    const endMinutes = endHour * 60 + endMin;
+    const diffMinutes = endMinutes - startMinutes;
+    return diffMinutes / 60;
+  };
+
   useEffect(() => {
     // Get booking data from sessionStorage
     const stored = sessionStorage.getItem('bookingData');
     if (stored) {
-      setBookingData(JSON.parse(stored));
+      const data = JSON.parse(stored);
+      setBookingData(data);
+      
+      // Calculate hours and fetch room price
+      if (data.startTime && data.endTime && data.roomId) {
+        const calculatedHours = calculateHours(data.startTime, data.endTime);
+        setHours(calculatedHours);
+        
+        // Fetch room data
+        fetchRoomPrice(data.roomId);
+      }
     } else {
       // If no booking data, redirect to home
       router.push('/');
     }
   }, [router]);
+
+  const fetchRoomPrice = async (roomId: string) => {
+    setIsLoadingPrice(true);
+    try {
+      const response = await fetch(`/api/rooms?roomId=${encodeURIComponent(roomId)}`);
+      const data = await response.json();
+      
+      if (response.ok && data.room) {
+        setRoomData(data.room);
+        const roomPricePerHour = data.room.pricePerHour || 0;
+        setRoomPrice(roomPricePerHour);
+      } else {
+        console.error('Error fetching room price:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching room price:', error);
+    } finally {
+      setIsLoadingPrice(false);
+    }
+  };
+
+  // Calculate total price when hours, room price, or additional price changes
+  useEffect(() => {
+    if (hours > 0 && roomPrice > 0 && bookingData) {
+      const additionalPricePerHour = bookingData.bookingTypeAdditionalPrice || 0;
+      const roomTotal = roomPrice * hours;
+      const additionalTotal = additionalPricePerHour * hours;
+      const total = roomTotal + additionalTotal;
+      setAdditionalPrice(additionalPricePerHour);
+      setTotalPrice(total);
+    }
+  }, [hours, roomPrice, bookingData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,11 +134,14 @@ export default function BookingPage() {
         firstName,
         lastName,
         date: bookingData.date,
+        bookingType: bookingData.bookingType,
+        bookingTypeName: bookingData.bookingTypeName,
         timeSlot: bookingData.timeSlot,
         startTime: bookingData.startTime,
         endTime: bookingData.endTime,
         roomId: bookingData.roomId,
         roomName: bookingData.roomName,
+        totalPrice: totalPrice,
       };
 
       // Upload receipt image if provided
@@ -245,6 +315,12 @@ export default function BookingPage() {
                   })}</span>
                 </div>
               )}
+              {bookingData.bookingTypeName && (
+                <div className="flex items-center">
+                  <span className="font-medium w-24">ประเภท:</span>
+                  <span>{bookingData.bookingTypeName}</span>
+                </div>
+              )}
               <div className="flex items-center">
                 <span className="font-medium w-24">ช่วงเวลา:</span>
                 <span>{bookingData.timeSlot}</span>
@@ -255,6 +331,43 @@ export default function BookingPage() {
               </div>
             </div>
           </div>
+
+          {/* Price Calculation */}
+          {isLoadingPrice ? (
+            <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-gray-500 text-center">กำลังคำนวณราคา...</p>
+            </div>
+          ) : hours > 0 && roomPrice > 0 && (
+            <div className="mb-8 p-6 bg-green-50 rounded-lg border border-green-200">
+              <h3 className="text-lg font-semibold text-green-900 mb-4">รายละเอียดการคำนวณราคา</h3>
+              <div className="space-y-3 text-gray-700">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">จำนวนชั่วโมง:</span>
+                  <span className="font-semibold">{hours.toFixed(2)} ชั่วโมง</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">ราคาห้อง ({roomData?.name || bookingData.roomName}):</span>
+                  <span className="font-semibold">{roomPrice.toLocaleString('th-TH')} บาท/ชั่วโมง</span>
+                </div>
+                {bookingData.bookingTypeName && additionalPrice > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">ราคาเพิ่มเติม ({bookingData.bookingTypeName}):</span>
+                    <span className="font-semibold">{additionalPrice.toLocaleString('th-TH')} บาท/ชั่วโมง</span>
+                  </div>
+                )}
+                <div className="border-t border-green-300 pt-3 mt-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-base font-semibold">ยอดรวม:</span>
+                    <span className="text-xl font-bold text-green-700">{totalPrice.toLocaleString('th-TH')} บาท</span>
+                  </div>
+                  <div className="text-xs text-gray-600 mt-2">
+                    ({hours.toFixed(2)} ชั่วโมง × {roomPrice.toLocaleString('th-TH')} บาท)
+                    {additionalPrice > 0 && ` + (${hours.toFixed(2)} ชั่วโมง × ${additionalPrice.toLocaleString('th-TH')} บาท)`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* First Name */}

@@ -10,7 +10,7 @@ const base = new Airtable({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { firstName, lastName, date, timeSlot, startTime, endTime, roomId, roomName, receiptUrl, receiptFileName } = body;
+    const { firstName, lastName, date, bookingType, bookingTypeName, timeSlot, startTime, endTime, roomId, roomName, totalPrice, receiptUrl, receiptFileName } = body;
 
     // Validate required fields
     if (!firstName || !lastName || !timeSlot || !roomId || !date) {
@@ -55,6 +55,16 @@ export async function POST(request: NextRequest) {
     // if (endTime) {
     //   fields['End Time'] = endTime;
     // }
+
+    // Add booking type if provided
+    if (bookingTypeName) {
+      fields['Booking Type'] = bookingTypeName;
+    }
+
+    // Add total price if provided
+    if (totalPrice !== undefined && totalPrice !== null) {
+      fields['Total Price'] = Number(totalPrice);
+    }
 
     // Add Status - make sure "Pending" option exists in Airtable Status field
     // If you get INVALID_MULTIPLE_CHOICE_OPTIONS error, add "Pending" option in Airtable
