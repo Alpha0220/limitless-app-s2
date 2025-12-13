@@ -23,6 +23,7 @@ export interface StudentRecord {
     user_email?: string;
     remark?: string;
     is_update?: boolean;
+    is_email_sent?: 'success' | 'fail' | 'pending';
     // Document field omitted for initial implementation as it requires file hosting
   };
 }
@@ -50,7 +51,7 @@ export async function getAllStudents(): Promise<StudentRecord[]> {
   try {
     const records = await base(TABLE_NAME).select({
       view: 'Grid view', // Verify view name or remove if strict filtering not needed
-      fields: ['full_name', 'name_class', 'uuid', 'is_update', 'nickname'], // Fetch only necessary fields
+      fields: ['full_name', 'name_class', 'uuid', 'is_update', 'nickname', 'is_email_sent'], // Fetch only necessary fields
       sort: [{ field: 'uuid', direction: 'asc' }]
     }).all();
 
@@ -61,6 +62,19 @@ export async function getAllStudents(): Promise<StudentRecord[]> {
   } catch (error) {
     console.error('Error fetching all students:', error);
     return [];
+  }
+}
+
+export async function getStudentById(recordId: string): Promise<StudentRecord | null> {
+  try {
+    const record = await base(TABLE_NAME).find(recordId);
+    return {
+      id: record.id,
+      fields: record.fields as StudentRecord['fields'],
+    };
+  } catch (error) {
+    console.error('Error fetching student by ID:', error);
+    return null;
   }
 }
 
@@ -76,6 +90,18 @@ export async function updateStudentInAirtable(recordId: string, data: Partial<St
     return { success: true, record };
   } catch (error) {
     console.error('Error updating student in Airtable:', error);
+    throw error;
+  }
+}
+
+export async function updateEmailStatus(recordId: string, status: 'success' | 'fail') {
+  try {
+    const record = await base(TABLE_NAME).update(recordId, {
+      is_email_sent: status
+    });
+    return { success: true, record };
+  } catch (error) {
+    console.error('Error updating email status in Airtable:', error);
     throw error;
   }
 }
