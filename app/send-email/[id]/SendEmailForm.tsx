@@ -88,21 +88,24 @@ export default function SendEmailForm({ student }: { student: StudentData }) {
         <input type="hidden" name="recordId" value={student.id} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* General Info */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-slate-900 border-b border-slate-200 pb-2">ข้อมูลทั่วไป</h4>
-            <InputField label="ชื่อ-นามสกุล" name="full_name" defaultValue={student.fields.full_name} />
-            <InputField label="รหัสคลาส" name="name_class" defaultValue={student.fields.name_class} />
-          </div>
+          {/* Tax Invoice Information */}
+          <div className="md:col-span-2 space-y-4">
+            <h4 className="text-sm font-semibold text-slate-900 border-b border-slate-200 pb-2">ข้อมูลใบกำกับภาษี</h4>
 
-          {/* Tax Info */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-slate-900 border-b border-slate-200 pb-2">ใบกำกับภาษี</h4>
-            <div className="grid grid-cols-2 gap-3">
+            {/* Hidden Fields */}
+            <input type="hidden" name="name_class" value={student.fields.name_class} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField label="ชื่อ-นามสกุล" name="full_name" defaultValue={student.fields.full_name} />
+              <InputField label="Email รับบิล (สำคัญ)" name="bill_email" type="email" defaultValue={student.fields.bill_email} placeholder="example@mail.com" required />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField label="ชื่อบริษัท" name="company_name" defaultValue={student.fields.company_name} placeholder="-" />
               <InputField label="เลขผู้เสียภาษี" name="tax_id" defaultValue={student.fields.tax_id} placeholder="-" />
             </div>
-            <div className="col-span-2">
+
+            <div>
               <label className="block text-xs font-medium text-slate-500 mb-1">ที่อยู่</label>
               <textarea
                 name="tax_addres"
@@ -111,7 +114,82 @@ export default function SendEmailForm({ student }: { student: StudentData }) {
                 className="w-full border border-slate-200 rounded-md p-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none resize-none"
               />
             </div>
-            <InputField label="Email รับบิล (สำคัญ)" name="bill_email" type="email" defaultValue={student.fields.bill_email} placeholder="example@mail.com" required />
+          </div>
+        </div>
+
+        {/* Email Content Configuration */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold text-slate-900 border-b border-slate-200 pb-2">กำหนดเนื้อหาอีเมล (Email Content)</h4>
+
+          {/* Subject */}
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1">หัวข้ออีเมล (Subject)</label>
+            <input
+              type="text"
+              name="email_subject"
+              defaultValue={`ใบเสร็จรับเงิน/ใบกำกับภาษี - ${student.fields.full_name || ''}`}
+              className="w-full border border-slate-200 rounded-md p-2 text-sm text-slate-900 font-medium bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none transition-colors"
+            />
+          </div>
+
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
+            <p className="text-xs text-slate-400 font-mono text-center mb-2">- ส่วนของเนื้อหา (Body) -</p>
+
+            {/* H1 Header */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-400 w-8">H1</span>
+              <input
+                type="text"
+                name="email_header"
+                defaultValue="แจ้งชำระค่าบริการ / Receipt"
+                placeholder="หัวข้อหลักในอีเมล..."
+                className="flex-1 border border-slate-200 rounded-md p-2 text-lg font-bold text-slate-800 focus:ring-1 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            {/* Greeting */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400 w-8">เรียน</span>
+              <input
+                type="text"
+                name="email_recipient"
+                defaultValue={`คุณ ${student.fields.full_name || ''}`}
+                className="flex-1 border border-slate-200 rounded-md p-2 text-sm text-slate-700 focus:ring-1 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            {/* Bold Line */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-400 w-8">Bold</span>
+              <input
+                type="text"
+                name="email_bold_text"
+                defaultValue={`Class: ${student.fields.name_class || '-'}`}
+                className="flex-1 border border-slate-200 rounded-md p-2 text-sm font-bold text-slate-800 bg-yellow-50/50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            {/* Details */}
+            <div className="flex items-start gap-2">
+              <span className="text-xs text-slate-400 w-8 mt-2">Detail</span>
+              <textarea
+                name="email_detail"
+                rows={3}
+                defaultValue="ทางเราได้รับยอดชำระเรียบร้อยแล้ว และขอส่งเอกสารใบเสร็จรับเงิน/ใบกำกับภาษี ตามไฟล์ที่แนบมาพร้อมกับอีเมลฉบับนี้ครับ"
+                className="flex-1 border border-slate-200 rounded-md p-2 text-sm text-slate-600 focus:ring-1 focus:ring-indigo-500 outline-none resize-none"
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400 w-8">Sign</span>
+              <input
+                type="text"
+                name="email_footer"
+                defaultValue="Limitless Club Team"
+                className="flex-1 border border-slate-200 rounded-md p-2 text-xs font-medium text-slate-500 text-right focus:text-left focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+              />
+            </div>
           </div>
         </div>
 

@@ -10,6 +10,7 @@ const TABLE_NAME = 'BillingInformation';
 export interface StudentRecord {
   id: string; // Airtable Record ID
   fields: {
+    id?: number;
     uuid?: string;
     full_name?: string;
     nickname?: string;
@@ -51,7 +52,7 @@ export async function getAllStudents(): Promise<StudentRecord[]> {
   try {
     const records = await base(TABLE_NAME).select({
       view: 'Grid view', // Verify view name or remove if strict filtering not needed
-      fields: ['full_name', 'name_class', 'uuid', 'is_update', 'nickname', 'is_email_sent'], // Fetch only necessary fields
+      fields: ['id', 'full_name', 'name_class', 'uuid', 'is_update', 'nickname', 'is_email_sent'], // Fetch only necessary fields
       sort: [{ field: 'uuid', direction: 'asc' }]
     }).all();
 

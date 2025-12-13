@@ -46,6 +46,14 @@ export async function sendEmailWithAttachment(prevState: any, formData: FormData
   const billEmail = formData.get('bill_email') as string;
   const file = formData.get('attachment') as File;
 
+  // Extract Structured Content
+  const subject = formData.get('email_subject') as string || 'ใบเสร็จรับเงิน/ใบกำกับภาษี';
+  const header = formData.get('email_header') as string;
+  const recipient = formData.get('email_recipient') as string;
+  const boldText = formData.get('email_bold_text') as string;
+  const detail = formData.get('email_detail') as string;
+  const footer = formData.get('email_footer') as string;
+
   if (!recordId || !billEmail) {
     return { success: false, message: 'ข้อมูลไม่ครบถ้วน (Record ID หรือ Email)' };
   }
@@ -77,17 +85,34 @@ export async function sendEmailWithAttachment(prevState: any, formData: FormData
     // 3. Send Email via Gmail (Nodemailer)
     console.log(`[Gmail] Sending email to: ${billEmail}`);
 
+    // Format detail lines
+    const formattedDetail = detail ? detail.replace(/\n/g, '<br/>') : '';
+
     await transporter.sendMail({
       from: `"Limitless Club" <${process.env.GMAIL_USER}>`,
       to: billEmail,
-      subject: `ใบเสร็จรับเงิน/ใบกำกับภาษี - Limitless Club`,
+      subject: subject,
       html: `
-        <div style="font-family: sans-serif; color: #333;">
-          <h2>เรียนคุณ ${data.full_name}</h2>
-          <p>ทาง Limitless Club ขอส่งเอกสารใบเสร็จรับเงิน/ใบกำกับภาษี สำหรับคลาส <strong>${data.name_class}</strong> ดังแนบครับ</p>
-          <br/>
-          <p>ขอบคุณครับ</p>
-          <p style="color: #666; font-size: 12px;">Limitless Club Team</p>
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+          
+          ${header ? `<h1 style="color: #4f46e5; margin-bottom: 20px; font-size: 24px; text-align: center;">${header}</h1>` : ''}
+          
+          <div style="margin-bottom: 20px;">
+            <p style="font-size: 16px; margin-bottom: 10px;">เรียน ${recipient || 'ลูกค้าผู้มีอุปการคุณ'},</p>
+            
+            ${boldText ? `<p style="font-weight: bold; font-size: 18px; color: #111; margin: 15px 0;">${boldText}</p>` : ''}
+            
+            <div style="color: #555; margin-bottom: 20px;">
+              ${formattedDetail}
+            </div>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
+          
+          <div style="text-align: center; color: #888; font-size: 14px;">
+            <p style="font-weight: bold; color: #4f46e5; margin-bottom: 5px;">${footer || 'Limitless Club Team'}</p>
+           <p style="font-size: 12px;">-</p>
+          </div>
         </div>
       `,
       attachments: attachments

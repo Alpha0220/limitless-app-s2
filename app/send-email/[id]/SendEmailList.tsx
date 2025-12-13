@@ -54,18 +54,33 @@ export default function SendEmailList({ students }: { students: StudentData[] })
               onClick={() => toggleAccordion(student.id)}
               className="p-4 flex items-center justify-between cursor-pointer group bg-white"
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm ${emailStatus === 'success' ? 'bg-green-500' : 'bg-slate-700'}`}>
-                  {student.fields.name_class ? student.fields.name_class.substring(0, 1) : '?'}
+              <div className="flex items-center gap-4 w-full">
+                {/* Icon */}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm shrink-0 ${emailStatus === 'success' ? 'bg-gradient-to-br from-green-500 to-emerald-600' : 'bg-gradient-to-br from-slate-700 to-slate-800'}`}>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
-                    {student.fields.full_name || 'ไม่ระบุชื่อ'}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-slate-500">{student.fields.name_class || '-'}</span>
-                    <span className="text-slate-300">•</span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${statusColor}`}>
+
+                {/* Content */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 w-full text-sm">
+                  <div className="font-bold text-slate-800 text-base">
+                    คุณ {student.fields.full_name || 'ไม่ระบุชื่อ'}
+                  </div>
+
+                  <div className="hidden sm:block text-slate-300">/</div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">Class</span>
+                    <span className="font-medium text-slate-600">{student.fields.name_class || '-'}</span>
+                  </div>
+
+                  <div className="hidden sm:block text-slate-300">/</div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">Status :</span>
+                    <span className={`px-2 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wide border ${emailStatus === 'success' ? 'bg-green-50 text-green-700 border-green-200' :
+                        emailStatus === 'fail' ? 'bg-red-50 text-red-700 border-red-200' :
+                          'bg-slate-50 text-slate-500 border-slate-200'
+                      }`}>
                       {statusText}
                     </span>
                   </div>

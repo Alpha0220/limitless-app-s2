@@ -67,7 +67,7 @@ export default async function Home() {
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50/50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ref ID</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ID</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ชื่อเล่น</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">คลาส</th>
@@ -79,14 +79,14 @@ export default async function Home() {
               <tbody className="bg-white divide-y divide-slate-200">
                 {students.map((student) => (
                   <tr key={student.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-500">{student.fields.uuid}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-500">{student.fields.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{student.fields.full_name || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{student.fields.nickname || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{student.fields.name_class || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${student.fields.is_update
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-amber-100 text-amber-800'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
                         }`}>
                         {student.fields.is_update ? 'ยืนยันแล้ว' : 'รอตรวจสอบ'}
                       </span>
