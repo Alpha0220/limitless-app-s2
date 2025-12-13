@@ -71,7 +71,8 @@ export default async function Home() {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ชื่อเล่น</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">คลาส</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">สถานะ</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">สถานะข้อมูล</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">สถานะอีเมล</th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">จัดการ</th>
                 </tr>
               </thead>
@@ -90,10 +91,35 @@ export default async function Home() {
                         {student.fields.is_update ? 'ยืนยันแล้ว' : 'รอตรวจสอบ'}
                       </span>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {student.fields.is_email_sent === 'success' && (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 gap-1 items-center">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                          ส่งแล้ว
+                        </span>
+                      )}
+                      {student.fields.is_email_sent === 'fail' && (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 gap-1 items-center">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                          ไม่สำเร็จ
+                        </span>
+                      )}
+                      {(!student.fields.is_email_sent || student.fields.is_email_sent === 'pending') && (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-500">
+                          -
+                        </span>
+                      )}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href={`/create/id?refid=${student.fields.uuid}`} className="text-blue-600 hover:text-blue-900">
-                        ดูข้อมูล
-                      </a>
+                      <div className="flex items-center justify-end gap-3">
+                        <a href={`/create/id?refid=${student.fields.uuid}`} className="text-slate-500 hover:text-indigo-600 px-3 py-1 rounded hover:bg-slate-50 transition-colors">
+                          ดูข้อมูล
+                        </a>
+                        <a href={`/send-email/${student.id}`} className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 px-3 py-1.5 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                          ส่งเมล
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 ))}
