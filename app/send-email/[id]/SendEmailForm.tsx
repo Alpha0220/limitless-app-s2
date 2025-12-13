@@ -71,18 +71,9 @@ export default function SendEmailForm({ student }: { student: StudentData }) {
   };
 
   return (
-    <div className="bg-slate-50/50 p-6 rounded-b-xl border-t border-slate-100">
+    <div className="bg-slate-50/50 px-6 pb-6 rounded-b-xl border-t border-slate-100">
 
-      {state.message && (
-        <div className={`mb-4 p-3 rounded-lg border text-sm flex items-center gap-2 ${state.success ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-          {state.success ? (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-          ) : (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          )}
-          {state.message}
-        </div>
-      )}
+
 
       <form action={formAction} className="space-y-6">
         <input type="hidden" name="recordId" value={student.id} />
@@ -212,7 +203,17 @@ export default function SendEmailForm({ student }: { student: StudentData }) {
           </div>
         </div>
 
-        <div className="pt-2">
+        <div className="pt-2 space-y-3">
+          {state.message && (
+            <div className={`p-3 rounded-lg border text-sm flex items-center gap-2 ${state.success ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+              {state.success ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              )}
+              {state.message}
+            </div>
+          )}
           <SubmitButton />
         </div>
 

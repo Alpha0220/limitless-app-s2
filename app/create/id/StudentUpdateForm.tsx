@@ -88,40 +88,35 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
   };
 
   return (
-    <div className="bg-white p-8">
+    <div className="bg-white p-6">
 
       {/* Compact Info Header */}
-      <div className="bg-slate-50 rounded-lg p-4 mb-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+      <div className="bg-slate-50 rounded-lg p-3 mb-5 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
         <div>
-          <div className="text-xs text-slate-500 mb-1">ชื่อ-นามสกุล</div>
+          <div className="text-xs text-slate-500 mb-0.5">ชื่อ-นามสกุล</div>
           <div className="font-medium text-slate-900">{student.fields.full_name || '-'}</div>
         </div>
         <div>
-          <div className="text-xs text-slate-500 mb-1">รหัสคลาส</div>
+          <div className="text-xs text-slate-500 mb-0.5">รหัสคลาส</div>
           <div className="font-medium text-slate-900">{student.fields.name_class || '-'}</div>
         </div>
         <div className="col-span-2 md:col-span-1">
-          <div className="text-xs text-slate-500 mb-1">Reference ID</div>
+          <div className="text-xs text-slate-500 mb-0.5">Reference ID</div>
           <div className="font-mono text-xs text-slate-600">{student.fields.uuid || '-'}</div>
         </div>
       </div>
 
-      {state.message && (
-        <div className={`mb-6 p-4 rounded-lg border text-sm ${state.success ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
-          <div className="font-medium mb-1">{state.success ? '✓ สำเร็จ' : '✕ เกิดข้อผิดพลาด'}</div>
-          <div>{state.message}</div>
-        </div>
-      )}
 
-      <form action={formAction} className="space-y-8">
+
+      <form action={formAction} className="space-y-5">
         <input type="hidden" name="recordId" value={student.id} />
 
         {/* Personal Info */}
         <section>
-          <h3 className="text-sm font-semibold text-slate-700 mb-4 pb-2 border-b border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-700 mb-3 pb-1 border-b border-slate-200">
             ข้อมูลส่วนตัว
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
             <InputField
               label="ชื่อเล่น"
               name="nickname"
@@ -142,7 +137,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
 
         {/* Billing Info */}
         <section>
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+          <div className="flex items-center justify-between mb-3 pb-1 border-b border-slate-200">
             <h3 className="text-sm font-semibold text-slate-700">
               ข้อมูลใบกำกับภาษี
             </h3>
@@ -150,16 +145,16 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               <button
                 type="button"
                 onClick={handleCopyBilling}
-                className="text-xs flex items-center gap-1.5 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md transition-colors font-medium"
+                className="text-xs flex items-center gap-1.5 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition-colors font-medium"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                 </svg>
                 ใช้ข้อมูลเดิมที่มีในระบบ
               </button>
             )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
             <InputField
               label="ชื่อบริษัท"
               name="company_name"
@@ -192,7 +187,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
             />
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-2">ที่อยู่ใบกำกับภาษี</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">ที่อยู่ใบกำกับภาษี</label>
               <textarea
                 name="tax_addres"
                 value={billingData.tax_addres}
@@ -201,7 +196,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
                 rows={3}
                 placeholder="ที่อยู่สำหรับออกใบกำกับภาษี..."
                 className={`
-                  w-full border rounded-lg p-3 text-sm text-slate-900 placeholder-slate-400
+                  w-full border rounded-lg p-2.5 text-sm text-slate-900 placeholder-slate-400
                   focus:ring-1 focus:ring-slate-300 focus:border-slate-400 transition-colors outline-none resize-none
                   ${isReadOnly
                     ? 'bg-slate-50 border-slate-200 text-slate-500 cursor-not-allowed'
@@ -217,7 +212,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
         <section>
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">หมายเหตุ</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">หมายเหตุ</label>
               <textarea
                 name="remark"
                 defaultValue={student.fields.remark}
@@ -225,7 +220,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
                 rows={2}
                 placeholder="ระบุเพิ่มเติม..."
                 className={`
-                  w-full border rounded-lg p-3 text-sm text-slate-900 placeholder-slate-400
+                  w-full border rounded-lg p-2.5 text-sm text-slate-900 placeholder-slate-400
                   focus:ring-1 focus:ring-slate-300 focus:border-slate-400 transition-colors outline-none resize-none
                   ${isReadOnly
                     ? 'bg-slate-50 border-slate-200 text-slate-500 cursor-not-allowed'
@@ -237,7 +232,12 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
           </div>
         </section>
 
-        <div className="pt-4">
+        <div className="pt-0 space-y-3">
+          {state.message && (
+            <div className={`p-3 rounded-lg border text-sm text-center font-medium ${state.success ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+              {state.success ? '✓ บันทึกข้อมูลสำเร็จ' : state.message}
+            </div>
+          )}
           <SubmitButton disabled={isReadOnly} />
         </div>
       </form>

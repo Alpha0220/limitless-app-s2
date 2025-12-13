@@ -61,11 +61,11 @@ export default async function Page({ searchParams }: { searchParams: { refid?: s
         aria-hidden="true"
       />
 
-      <main className="flex-grow w-full max-w-5xl mx-auto py-8 px-3 sm:px-6 relative z-10">
+      <main className="flex-grow w-full max-w-5xl mx-auto py-4 px-3 sm:px-6 relative z-10">
         <StudentList students={students} />
       </main>
 
-      <footer className="py-8 text-center bg-slate-50 border-t border-slate-200/50">
+      <footer className="py-4 text-center bg-slate-50 border-t border-slate-200/50">
         <p className="text-slate-400 text-sm">&copy; {new Date().getFullYear()} Limitless Club. All rights reserved.</p>
       </footer>
     </div>

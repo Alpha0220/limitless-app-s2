@@ -66,20 +66,20 @@ export default function SendEmailList({ students }: { students: StudentData[] })
                     คุณ {student.fields.full_name || 'ไม่ระบุชื่อ'}
                   </div>
 
-                  <div className="hidden sm:block text-slate-300">/</div>
+                  <div className="hidden sm:block text-slate-300"> | </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-400">Class</span>
+                    <span className="text-slate-900">Class</span>
                     <span className="font-medium text-slate-600">{student.fields.name_class || '-'}</span>
                   </div>
 
-                  <div className="hidden sm:block text-slate-300">/</div>
+                  <div className="hidden sm:block text-slate-300"> | </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-400">Status :</span>
+                    {/* <span className="text-slate-400"></span> */}
                     <span className={`px-2 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wide border ${emailStatus === 'success' ? 'bg-green-50 text-green-700 border-green-200' :
-                        emailStatus === 'fail' ? 'bg-red-50 text-red-700 border-red-200' :
-                          'bg-slate-50 text-slate-500 border-slate-200'
+                      emailStatus === 'fail' ? 'bg-red-50 text-red-700 border-red-200' :
+                        'bg-slate-50 text-slate-500 border-slate-200'
                       }`}>
                       {statusText}
                     </span>

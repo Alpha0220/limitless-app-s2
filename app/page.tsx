@@ -68,6 +68,7 @@ export default async function Home() {
               <thead className="bg-slate-50/50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ID</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Group ID</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ชื่อเล่น</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">คลาส</th>
@@ -80,6 +81,7 @@ export default async function Home() {
                 {students.map((student) => (
                   <tr key={student.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-500">{student.fields.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-500">{student.fields.uuid}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{student.fields.full_name || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{student.fields.nickname || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{student.fields.name_class || '-'}</td>
