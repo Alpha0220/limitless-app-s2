@@ -1,5 +1,7 @@
 import { getAllStudents } from '@/lib/airtable';
 
+export const dynamic = 'force-dynamic';
+
 import { redirect } from 'next/navigation';
 
 import { formatDate } from '@/lib/utils';
