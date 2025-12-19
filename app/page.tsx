@@ -8,7 +8,6 @@ import { formatDate } from '@/lib/utils';
 
 import CopyableText from '@/app/components/CopyableText';
 import StudentTable from '@/app/components/StudentTable';
-import Image from 'next/image';
 
 export default async function Home() {
   const students = await getAllStudents();
@@ -28,24 +27,6 @@ export default async function Home() {
         className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-blue-100/40 to-indigo-100/40 rounded-full blur-3xl -z-10"
         aria-hidden="true"
       />
-
-      {/* Navbar */}
-      <nav className="bg-slate-900 shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/limitless-logo-b.png"
-                alt="Limitless Club Logo"
-                width={100}
-                height={60}
-                className="object-contain bg-white/10"
-              />
-              <span className="text-white font-semibold text-xl tracking-wide uppercase">Limitless Club</span>
-            </div>
-          </div>
-        </div>
-      </nav>
 
       <main className="max-w-7xl mx-auto py-4 sm:py-4 lg:py-6 px-4 sm:px-2 lg:px-2">
 

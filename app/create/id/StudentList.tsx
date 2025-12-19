@@ -18,6 +18,7 @@ interface StudentData {
     tax_addres?: string;
     bill_email?: string;
     user_email?: string;
+    full_name_certificate?: string;
     remark?: string;
     is_update?: boolean;
   };
@@ -49,21 +50,23 @@ export default function StudentList({ students }: { students: StudentData[] }) {
         {/* Card Header with Stats */}
         <div className="px-6 py-5 border-b border-slate-100 bg-white/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-              ข้อมูลที่ต้องตรวจสอบ
+            <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-3 tracking-tight">
+              <div className="w-1.5 h-7 bg-blue-600 rounded-full shadow-sm shadow-blue-200"></div>
+              ตรวจสอบข้อมูล
             </h3>
-            <p className="text-xs text-slate-500 mt-1 ml-3.5">กรุณาตรวจสอบและอัปเดตข้อมูลให้ครบถ้วน</p>
+            <p className="text-sm text-slate-500 mt-1 ml-4.5 font-medium italic">กรุณาอัปเดตข้อมูลให้ครบถ้วนเพื่อดำเนินการต่อ</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
-            <div className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              ส่งแล้ว: <span className="font-bold">{completed}</span>
-            </div>
-            <div className="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 flex items-center gap-1.5 shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-              ยังไม่ส่ง: <span className="font-bold">{pending}</span>
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider">
+            <div className={`
+              px-4 py-2 rounded-full border shadow-sm transition-all duration-300 flex items-center gap-2
+              ${completed === total 
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                : 'bg-amber-50 text-amber-700 border-amber-100'
+              }
+            `}>
+              <span className={`w-1.5 h-1.5 rounded-full ${completed === total ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
+              ส่งแล้ว {completed}/{total}
             </div>
           </div>
         </div>
@@ -78,10 +81,10 @@ export default function StudentList({ students }: { students: StudentData[] }) {
                 key={student.id}
                 id={`student-${student.id}`}
                 className={`
-              bg-white rounded-xl border transition-all duration-200
+              bg-white rounded-2xl border transition-all duration-300
               ${isExpanded
-                    ? 'border-slate-300 shadow-md'
-                    : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                    ? 'border-blue-100 shadow-xl shadow-blue-500/5 ring-4 ring-blue-50/20'
+                    : 'border-slate-100 hover:border-slate-200 hover:shadow-lg hover:shadow-slate-200/40'
                   }
             `}
               >
@@ -92,44 +95,29 @@ export default function StudentList({ students }: { students: StudentData[] }) {
                 >
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full">
                     <div className={`
-                      w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-base shrink-0
+                      w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shrink-0 transition-transform duration-300 group-hover:scale-110
                       ${isCompleted
-                        ? 'bg-emerald-500 shadow-emerald-200 shadow-md'
-                        : 'bg-slate-700 shadow-slate-200 shadow-sm'
+                        ? 'bg-emerald-500 shadow-emerald-200 shadow-lg'
+                        : 'bg-slate-400 shadow-slate-100 shadow-md'
                       }
                     `}>
                       {student.fields.full_name ? student.fields.full_name.substring(0, 1) : '?'}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-grow text-sm">
-                      <h3 className="text-base font-bold text-slate-900 leading-tight">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3 flex-grow text-sm">
+                     <h3 className={`text-lg font-bold transition-colors duration-200 ${isExpanded ? 'text-blue-700' : 'text-slate-800'}`}>
                         {student.fields.full_name || 'ไม่ระบุชื่อ'}
                       </h3>
 
-                      <span className="hidden sm:inline-block text-slate-300"> | </span>
-
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <span className="font-medium text-slate-900">Class</span>
-                        <span>- {student.fields.name_class}</span>
-                      </div>
-
-                      <span className="hidden sm:inline-block text-slate-300"> | </span>
-
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <span>{formatDate(student.fields.date)}</span>
-                      </div>
-
-                      <span className="hidden sm:inline-block text-slate-300"> | </span>
-
                       <div>
                         {isCompleted ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-wide">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-widest">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
                             ส่งแล้ว
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100 uppercase tracking-wide">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-widest">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-sm shadow-amber-200"></span>
                             ยังไม่ส่ง
                           </span>
                         )}

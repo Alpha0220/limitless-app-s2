@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { updateStudentInAirtable, updateEmailStatus } from '@/lib/airtable';
+import { updateStudentInAirtable, updateEmailStatus, updateDocumentField } from '@/lib/airtable';
 import nodemailer from 'nodemailer';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -29,6 +29,8 @@ export async function updateStudent(prevState: any, formData: FormData) {
 
   // Extract form data
   const data = {
+    full_name: formData.get('full_name') as string,
+    full_name_certificate: formData.get('full_name_certificate') as string,
     nickname: formData.get('nickname') as string,
     user_email: formData.get('user_email') as string,
     company_name: formData.get('company_name') as string,
@@ -36,6 +38,7 @@ export async function updateStudent(prevState: any, formData: FormData) {
     tax_id: formData.get('tax_id') as string,
     tax_addres: formData.get('tax_addres') as string,
     bill_email: formData.get('bill_email') as string,
+    phone_num: formData.get('phone_num') as string,
     remark: formData.get('remark') as string,
   };
 
@@ -88,13 +91,30 @@ export async function sendEmailWithAttachment(prevState: any, formData: FormData
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
+      // Determine file type and Cloudinary resource_type
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(fileExtension || '');
+      const isPDF = fileExtension === 'pdf';
+      
+      // Set appropriate resource_type for Cloudinary
+      // PDFs should use 'raw', images use 'image', others use 'auto'
+      const resourceType = isPDF ? 'raw' : (isImage ? 'image' : 'auto');
+      
+      console.log(`[File Upload] File: ${file.name}, Type: ${file.type}, Extension: ${fileExtension}, Resource Type: ${resourceType}, Size: ${file.size} bytes`);
+
       // Upload to Cloudinary
       try {
         const cloudinaryResult = await new Promise((resolve, reject) => {
           cloudinary.uploader.upload_stream(
             { 
               folder: 'documents',
-              resource_type: 'auto' 
+              resource_type: resourceType,
+              // For PDFs, ensure proper handling
+              ...(isPDF && { 
+                format: 'pdf',
+                use_filename: true,
+                unique_filename: false
+              })
             },
             (error: any, result: any) => {
               if (error) reject(error);
@@ -105,16 +125,45 @@ export async function sendEmailWithAttachment(prevState: any, formData: FormData
 
         if (cloudinaryResult?.secure_url) {
           fileUrl = cloudinaryResult.secure_url;
+          console.log(`[Cloudinary] Upload successful: ${fileUrl}`);
+          console.log(`[Cloudinary] Resource type: ${cloudinaryResult.resource_type}, Format: ${cloudinaryResult.format}`);
           
-          // Update Airtable document field
-          await updateStudentInAirtable(recordId, {
-            Document: [{ url: fileUrl, filename: file.name }]
-          });
+          // Update Airtable document field using dedicated function with retry logic
+          try {
+            console.log(`[Airtable] Updating Document field for ${file.name} (${fileExtension})`);
+            const updateResult = await updateDocumentField(recordId, fileUrl, file.name);
+            
+            // Verify the update was successful
+            if (updateResult?.success && updateResult?.record) {
+              const documentField = updateResult.record.fields?.Document;
+              if (documentField && Array.isArray(documentField) && documentField.length > 0) {
+                console.log(`[Airtable] ✓ Document field verified: ${documentField.length} attachment(s) found`);
+                console.log(`[Airtable] Attachment ID: ${documentField[0]?.id || 'N/A'}`);
+                console.log(`[Airtable] Attachment URL: ${documentField[0]?.url || 'N/A'}`);
+              } else {
+                console.warn(`[Airtable] ⚠ Document field exists but appears empty in response`);
+              }
+            }
+            
+            console.log(`[Airtable] Document field updated successfully for ${file.name}`);
+          } catch (documentError: any) {
+            console.error('[Airtable] Error updating Document field:', documentError);
+            // Log detailed error information
+            if (documentError?.error) {
+              console.error('[Airtable] Error details:', JSON.stringify(documentError.error, null, 2));
+            }
+            if (documentError?.message) {
+              console.error('[Airtable] Error message:', documentError.message);
+            }
+            // Don't throw - allow email to be sent even if document update fails
+          }
+        } else {
+          console.warn('[Cloudinary] Upload completed but no secure_url returned');
         }
-      } catch (uploadError) {
-        console.error('Cloudinary Upload Error:', uploadError);
-        // Continue even if upload fails? Or fail? 
-        // For now, logged it. Email attachment uses Buffer so it should still work.
+      } catch (uploadError: any) {
+        console.error('[Cloudinary] Upload Error:', uploadError);
+        console.error('[Cloudinary] Error details:', uploadError?.message || uploadError);
+        // Continue even if upload fails - email attachment uses Buffer so it should still work
       }
 
       attachments.push({

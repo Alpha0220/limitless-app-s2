@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Sarabun } from 'next/font/google';
+
+const sarabun = Sarabun({
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
+  subsets: ['thai', 'latin'],
+  display: 'swap',
+});
+
+import Navbar from "@/app/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Queue Master - Restaurant Room Booking",
@@ -13,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <body>{children}</body>
+      <body className={sarabun.className}>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
