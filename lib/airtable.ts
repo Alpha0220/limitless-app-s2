@@ -4,11 +4,11 @@ if (!process.env.AIRTABLE_API_KEY || !process.env.AIRTABLE_BASE_ID) {
   throw new Error('Missing Airtable credentials');
 }
 
-const base = new Airtable({ 
+export const base = new Airtable({ 
   apiKey: process.env.AIRTABLE_API_KEY,
   requestTimeout: 60000, // 60 seconds timeout (increased for better reliability)
 }).base(process.env.AIRTABLE_BASE_ID);
-const TABLE_NAME = 'BillingInformation';
+export const TABLE_NAME = 'BillingInformation';
 
 // Retry configuration
 const MAX_RETRIES = 3;
@@ -81,6 +81,7 @@ export interface StudentRecord {
     remark?: string;
     full_name_certificate?: string;
     phone_num?: string;
+    name_sale?: string;
     is_update?: boolean;
     is_email_sent?: 'success' | 'fail' | 'pending';
     Document?: { url: string; filename: string }[]; // Changed to Capitalized 'Document'
@@ -109,6 +110,24 @@ export async function getStudentsByReferenceId(refid: string): Promise<StudentRe
     // Return empty array on final failure
     return [];
   });
+}
+
+export async function getSales(): Promise<string[]> {
+  return retryWithBackoff(async () => {
+    try {
+      const records = await base('Sale').select({
+        fields: ['nickname'],
+      }).all();
+
+      return records
+        .map(record => record.fields.nickname as string)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b, 'th'));
+    } catch (error) {
+      console.error('Error fetching sales from Airtable:', error);
+      throw error;
+    }
+  }, 'getSales').catch(() => []);
 }
 
 export async function getAllStudents(): Promise<StudentRecord[]> {

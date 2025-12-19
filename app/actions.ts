@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { updateStudentInAirtable, updateEmailStatus, updateDocumentField } from '@/lib/airtable';
+import { updateStudentInAirtable, updateEmailStatus, updateDocumentField, base, TABLE_NAME } from '@/lib/airtable';
 import nodemailer from 'nodemailer';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -28,18 +28,54 @@ export async function updateStudent(prevState: any, formData: FormData) {
   }
 
   // Extract form data
+  const full_name = formData.get('full_name') as string;
+  const full_name_certificate = formData.get('full_name_certificate') as string;
+  const nickname = formData.get('nickname') as string;
+  const user_email = formData.get('user_email') as string;
+  const company_name = formData.get('company_name') as string;
+  const tax_id = formData.get('tax_id') as string;
+  const tax_addres = formData.get('tax_addres') as string;
+  const bill_email = formData.get('bill_email') as string;
+  const phone_num = formData.get('phone_num') as string;
+  const remark = formData.get('remark') as string;
+
+  // Validation
+  if (!full_name || !full_name_certificate || !nickname || !user_email || !company_name || !tax_id || !tax_addres || !bill_email || !phone_num) {
+    return { success: false, message: 'กรุณากรอกข้อมูลให้ครบทุกช่อง' };
+  }
+
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(user_email) || !emailRegex.test(bill_email)) {
+    return { success: false, message: 'รูปแบบอีเมลไม่ถูกต้อง' };
+  }
+
+  // Phone validation (10 digits)
+  if (!/^[0-9]{10}$/.test(phone_num)) {
+    return { success: false, message: 'เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก' };
+  }
+
+  // Tax ID validation (13 digits)
+  if (!/^[0-9]{13}$/.test(tax_id)) {
+    return { success: false, message: 'เลขประจำตัวผู้เสียภาษีต้องเป็นตัวเลข 13 หลัก' };
+  }
+
+  // English name validation
+  if (!/^[a-zA-Z\s]+$/.test(full_name_certificate)) {
+    return { success: false, message: 'ชื่อ-นามสกุล (English) ต้องเป็นภาษาอังกฤษเท่านั้น' };
+  }
+
   const data = {
-    full_name: formData.get('full_name') as string,
-    full_name_certificate: formData.get('full_name_certificate') as string,
-    nickname: formData.get('nickname') as string,
-    user_email: formData.get('user_email') as string,
-    company_name: formData.get('company_name') as string,
-    taxpayer_name: formData.get('taxpayer_name') as string,
-    tax_id: formData.get('tax_id') as string,
-    tax_addres: formData.get('tax_addres') as string,
-    bill_email: formData.get('bill_email') as string,
-    phone_num: formData.get('phone_num') as string,
-    remark: formData.get('remark') as string,
+    full_name,
+    full_name_certificate,
+    nickname,
+    user_email,
+    company_name,
+    tax_id,
+    tax_addres,
+    bill_email,
+    phone_num,
+    remark,
   };
 
   try {
@@ -228,5 +264,19 @@ export async function sendEmailWithAttachment(prevState: any, formData: FormData
     }
 
     return { success: false, message: 'เกิดข้อผิดพลาดในการส่งอีเมล (โปรดตรวจสอบ App Password)' };
+  }
+}
+
+export async function updateSaleName(recordIds: string[], saleName: string) {
+  try {
+    const promises = recordIds.map(id => 
+      base(TABLE_NAME).update(id, { name_sale: saleName })
+    );
+    await Promise.all(promises);
+    revalidatePath('/create/id');
+    return { success: true };
+  } catch (error) {
+    console.error('Update sale name error:', error);
+    return { success: false, message: 'Failed to update sale name' };
   }
 }

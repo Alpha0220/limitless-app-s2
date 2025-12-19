@@ -1,4 +1,4 @@
-import { getStudentsByReferenceId } from '@/lib/airtable';
+import { getStudentsByReferenceId, getSales } from '@/lib/airtable';
 import StudentList from './StudentList';
 
 export default async function Page({ searchParams }: { searchParams: { refid?: string } }) {
@@ -15,7 +15,10 @@ export default async function Page({ searchParams }: { searchParams: { refid?: s
     );
   }
 
-  const students = await getStudentsByReferenceId(refid);
+  const [students, salesList] = await Promise.all([
+    getStudentsByReferenceId(refid),
+    getSales()
+  ]);
 
   if (students.length === 0) {
     return (
@@ -43,7 +46,7 @@ export default async function Page({ searchParams }: { searchParams: { refid?: s
       />
 
       <main className="flex-grow w-full max-w-5xl mx-auto py-4 px-3 sm:px-6 relative z-10">
-        <StudentList students={students} />
+        <StudentList students={students} salesList={salesList} />
       </main>
 
       <footer className="py-4 text-center bg-slate-50 border-t border-slate-200/50">

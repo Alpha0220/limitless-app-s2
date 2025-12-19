@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import StudentUpdateForm from './StudentUpdateForm';
 import { formatDate } from '@/lib/utils';
+import { updateSaleName } from '@/app/actions';
 
 interface StudentData {
   id: string;
@@ -19,12 +20,14 @@ interface StudentData {
     bill_email?: string;
     user_email?: string;
     full_name_certificate?: string;
+    phone_num?: string;
+    name_sale?: string;
     remark?: string;
     is_update?: boolean;
   };
 }
 
-export default function StudentList({ students }: { students: StudentData[] }) {
+export default function StudentList({ students, salesList = [] }: { students: StudentData[], salesList?: string[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(
     students.length === 1 ? students[0].id : null
   );
@@ -42,6 +45,20 @@ export default function StudentList({ students }: { students: StudentData[] }) {
   const completed = students.filter(s => s.fields.is_update).length;
   const pending = total - completed;
 
+  // Initialize sale name from existing data if available
+  const initialSale = students.find(s => s.fields.name_sale)?.fields.name_sale || '';
+  const [selectedSale, setSelectedSale] = useState(initialSale);
+  const [isUpdatingSale, setIsUpdatingSale] = useState(false);
+
+  const handleSaleChange = async (sale: string) => {
+    setSelectedSale(sale);
+    setIsUpdatingSale(true);
+    const recordIds = students.map(s => s.id);
+    await updateSaleName(recordIds, sale);
+    setIsUpdatingSale(false);
+  };
+
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Nested Card Layout - Mobile Optimized */}
@@ -49,17 +66,38 @@ export default function StudentList({ students }: { students: StudentData[] }) {
 
         {/* Card Header with Stats */}
         <div className="px-6 py-5 border-b border-slate-100 bg-white/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
+          <div className="flex-grow">
             <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-3 tracking-tight">
               <div className="w-1.5 h-7 bg-blue-600 rounded-full shadow-sm shadow-blue-200"></div>
               ตรวจสอบข้อมูล
             </h3>
-            <p className="text-sm text-slate-500 mt-1 ml-4.5 font-medium italic">กรุณาอัปเดตข้อมูลให้ครบถ้วนเพื่อดำเนินการต่อ</p>
+            <div className="flex flex-col gap-3 mt-1.5 ml-4.5">
+              <p className="text-sm text-slate-500 font-medium italic">กรุณาอัปเดตข้อมูลให้ครบถ้วนเพื่อดำเนินการต่อ</p>
+              
+              <div className="relative w-fit">
+                <select
+                  value={selectedSale}
+                  onChange={(e) => handleSaleChange(e.target.value)}
+                  disabled={isUpdatingSale}
+                  className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-[13px] font-bold py-2 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px] shadow-sm"
+                >
+                  <option value="">เลือกรายชื่อเซล</option>
+                  {salesList.map(sale => (
+                    <option key={sale} value={sale}>{sale}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider">
+          <div className="flex flex-wrap items-center gap-2">
             <div className={`
-              px-4 py-2 rounded-full border shadow-sm transition-all duration-300 flex items-center gap-2
+              px-4 py-2 rounded-xl border shadow-sm transition-all duration-300 flex items-center gap-2
               ${completed === total 
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
                 : 'bg-amber-50 text-amber-700 border-amber-100'
@@ -111,12 +149,12 @@ export default function StudentList({ students }: { students: StudentData[] }) {
 
                       <div>
                         {isCompleted ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-widest">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[12px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-widest">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
                             ส่งแล้ว
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-widest">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[12px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-widest">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-sm shadow-amber-200"></span>
                             ยังไม่ส่ง
                           </span>

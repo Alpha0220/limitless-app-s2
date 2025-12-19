@@ -48,6 +48,7 @@ interface StudentData {
     user_email?: string;
     full_name_certificate?: string;
     phone_num?: string;
+    name_sale?: string;
     name_class?: string;
     date?: string;
     remark?: string;
@@ -83,6 +84,11 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
     tax_addres: student.fields.tax_addres || '',
   });
 
+  // State for personal fields to allow numeric filtering
+  const [personalData, setPersonalData] = useState({
+    phone_num: student.fields.phone_num || '',
+  });
+
   const handleCopyBilling = () => {
     if (billingTemplate) {
       setBillingData({
@@ -97,7 +103,26 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
 
   const handleBillingChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setBillingData(prev => ({ ...prev, [name]: value }));
+    let finalValue = value;
+    
+    // Numbers only for Tax ID (max 13)
+    if (name === 'tax_id') {
+      finalValue = value.replace(/[^0-9]/g, '').slice(0, 13);
+    }
+    
+    setBillingData(prev => ({ ...prev, [name]: finalValue }));
+  };
+
+  const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let finalValue = value;
+
+    // Numbers only for Phone Number (max 10)
+    if (name === 'phone_num') {
+      finalValue = value.replace(/[^0-9]/g, '').slice(0, 10);
+    }
+
+    setPersonalData(prev => ({ ...prev, [name]: finalValue }));
   };
 
   return (
@@ -139,6 +164,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
                 defaultValue={student.fields.nickname}
                 disabled={isReadOnly}
                 placeholder="ชื่อเล่นของคุณ"
+                required
               />
             </div>
             <InputField
@@ -147,6 +173,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               defaultValue={student.fields.full_name}
               disabled={isReadOnly}
               placeholder="ชื่อ-นามสกุล ของท่าน"
+              required
             />
             <InputField
               label="ชื่อ-นามสกุล (English)"
@@ -154,14 +181,20 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               defaultValue={student.fields.full_name_certificate}
               disabled={isReadOnly}
               placeholder="Your name in English"
+              pattern="^[a-zA-Z\s]+$"
+              required
             />
-            <InputField
+             <InputField
               label="เบอร์โทร"
               name="phone_num"
               type="tel"
-              defaultValue={student.fields.phone_num}
+              value={personalData.phone_num}
+              onChange={handlePersonalChange}
               disabled={isReadOnly}
-              placeholder="081-xxxxxxx"
+              placeholder="08XXXXXXXX"
+              pattern="^[0-9]{10}$"
+              inputMode="numeric"
+              required
             />
             <InputField
               label="อีเมลส่วนตัว"
@@ -170,6 +203,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               defaultValue={student.fields.user_email}
               disabled={isReadOnly}
               placeholder="example@email.com"
+              required
             />
           </div>
         </section>
@@ -209,6 +243,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               onChange={handleBillingChange}
               disabled={isReadOnly}
               placeholder="ชื่อบุคคล หรือ ชื่อนิติบุคคล"
+              required
             />
             <InputField
               label="เลขทะเบียนผู้เสียภาษี"
@@ -216,7 +251,10 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               value={billingData.tax_id}
               onChange={handleBillingChange}
               disabled={isReadOnly}
-              placeholder="เลขบัตรประชาชน หรือ เลขทะเบียนนิติบุคคล"
+              placeholder="เลข 13 หลัก"
+              pattern="^[0-9]{13}$"
+              inputMode="numeric"
+              required
             />
             <InputField
               label="อีเมล์สำหรับเอกสารทางบัญชี"
@@ -227,17 +265,21 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               onChange={handleBillingChange}
               disabled={isReadOnly}
               placeholder="account@company.com"
+              required
             />
 
             <div className="md:col-span-2">
               <div className="flex flex-col ml-1 mb-2">
-                <label className="text-[13px] font-bold text-slate-600 uppercase tracking-wide px-0.5">ที่อยู่ใบกำกับภาษี</label>
+                <label className="text-[13px] font-bold text-slate-600 uppercase tracking-wide px-0.5">
+                  ที่อยู่ใบกำกับภาษี {!isReadOnly && <span className="text-red-500">*</span>}
+                </label>
               </div>
               <textarea
                 name="tax_addres"
                 value={billingData.tax_addres}
                 onChange={handleBillingChange}
                 disabled={isReadOnly}
+                required
                 rows={3}
                 placeholder="ที่อยู่สำหรับออกใบกำกับภาษี..."
                 className={`
@@ -308,7 +350,10 @@ function InputField({
   onChange,
   disabled,
   placeholder,
-  description
+  description,
+  required,
+  pattern,
+  inputMode
 }: {
   label: string;
   name: string;
@@ -319,12 +364,15 @@ function InputField({
   disabled: boolean;
   placeholder?: string;
   description?: string;
+  required?: boolean;
+  pattern?: string;
+  inputMode?: "numeric" | "text" | "tel" | "email" | "url" | "search" | "decimal" | "none";
 }) {
   return (
     <div className="space-y-1.5">
       <div className="flex flex-col ml-1">
         <label className="text-[13px] font-bold text-slate-600 uppercase tracking-wide px-0.5">
-          {label}
+          {label} {required && !disabled && <span className="text-red-500">*</span>}
         </label>
         {description && (
           <span className="text-[11px] font-medium text-slate-500 mt-0.5 leading-tight italic">
@@ -339,6 +387,9 @@ function InputField({
         value={value}
         onChange={onChange}
         disabled={disabled}
+        required={required}
+        pattern={pattern}
+        inputMode={inputMode}
         placeholder={placeholder}
         className={`
           w-full border rounded-xl p-3 text-base text-slate-800 placeholder-slate-400
