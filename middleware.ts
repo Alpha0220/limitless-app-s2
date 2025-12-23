@@ -17,6 +17,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Allow access to public images
+  if (pathname.endsWith('.png') || pathname.endsWith('.jpg') || pathname.endsWith('.svg')) {
+    return NextResponse.next();
+  }
+
   // 2. Check for Authentication
   const session = request.cookies.get(SESSION_COOKIE_NAME)?.value;
 
