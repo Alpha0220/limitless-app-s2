@@ -197,7 +197,7 @@ export default function StudentList({
                   bg-white rounded-2xl border transition-all duration-300 overflow-hidden
                   ${isExpanded 
                     ? 'border-blue-300 shadow-lg shadow-blue-500/5' 
-                    : 'border-slate-100'
+                    : 'border-slate-400'
                   }
                 `}
               >
@@ -227,6 +227,11 @@ export default function StudentList({
                       </h3>
 
                       <div className="flex items-center gap-3">
+                        {isCompleted && (
+                          <span className="text-[13px] font-bold text-blue-600 px-1">
+                            ดูข้อมูล
+                          </span>
+                        )}
                         {isCompleted ? (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[12px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-widest">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>

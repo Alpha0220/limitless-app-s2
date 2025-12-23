@@ -73,7 +73,15 @@ const formatDateLocal = (dateString?: string) => {
 
 export default function StudentUpdateForm({ student, billingTemplate }: { student: StudentData, billingTemplate?: StudentData }) {
   const [state, formAction] = useFormState(updateStudent, initialState);
-  const isReadOnly = student.fields.is_update === true || state.success;
+  const [isEditing, setIsEditing] = useState(false);
+  const isReadOnly = (student.fields.is_update === true || state.success) && !isEditing;
+
+  // Reset editing state when submission is successful
+  useEffect(() => {
+    if (state.success) {
+      setIsEditing(false);
+    }
+  }, [state.success]);
 
   // State for billing fields to allow auto-fill
   const [billingData, setBillingData] = useState({
@@ -347,7 +355,20 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
               </div>
             </div>
           )}
-          <SubmitButton disabled={isReadOnly} />
+          {isReadOnly ? (
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="w-full py-4 px-6 rounded-xl font-extrabold text-sm uppercase tracking-widest shadow-lg transition-all duration-300 bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              แก้ไขข้อมูล
+            </button>
+          ) : (
+            <SubmitButton disabled={isReadOnly} />
+          )}
         </div>
       </form>
     </div>
