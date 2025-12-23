@@ -1,5 +1,6 @@
 import LogoutButton from './LogoutButton';
 import { cookies } from 'next/headers';
+import Image from 'next/image';
 
 export default function Navbar() {
   return (
@@ -8,10 +9,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             {/* Using standard img tag to bypass image optimization issues on deployment */}
-            <img
+            <Image
               src="/limitless-logo-b.png"
               alt="Limitless Club Logo"
-              className="h-10 w-auto object-contain bg-white/10"
+              width={100}
+              height={60}
+              className="object-contain bg-white/10"
             />
             <span className="text-white font-semibold text-xl tracking-wide uppercase">
               Limitless Club
