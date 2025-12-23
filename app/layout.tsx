@@ -11,8 +11,8 @@ const sarabun = Sarabun({
 import Navbar from "@/app/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "Queue Master - Restaurant Room Booking",
-  description: "Book restaurant rooms with ease",
+  title: "Limitless Club",
+  description: "Admin Portal for Limitless Club",
 };
 
 export default function RootLayout({
