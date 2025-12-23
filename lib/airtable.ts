@@ -135,8 +135,8 @@ export async function getAllStudents(): Promise<StudentRecord[]> {
   return retryWithBackoff(async () => {
     try {
       const records = await base(TABLE_NAME).select({
-        view: 'Grid view', // Verify view name or remove if strict filtering not needed
-        fields: ['id', 'full_name', 'name_class', 'uuid', 'is_update', 'nickname', 'is_email_sent', 'date'], // Fetch only necessary fields
+        view: 'Grid view',
+        fields: ['id', 'full_name', 'full_name_certificate', 'name_class', 'uuid', 'is_update', 'nickname', 'is_email_sent', 'date'],
         sort: [{ field: 'uuid', direction: 'asc' }]
       }).all();
 

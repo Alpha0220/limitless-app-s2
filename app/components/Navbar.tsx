@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import LogoutButton from './LogoutButton';
+import { cookies } from 'next/headers';
 
 export default function Navbar() {
   return (
@@ -17,6 +19,11 @@ export default function Navbar() {
               Limitless Club
             </span>
           </div>
+          {cookies().get('limitless_session') && (
+            <div className="flex items-center">
+              <LogoutButton />
+            </div>
+          )}
         </div>
       </div>
     </nav>

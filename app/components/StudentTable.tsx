@@ -130,7 +130,9 @@ export default function StudentTable({ students }: StudentTableProps) {
                       <span className="text-slate-400">-</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{student.fields.full_name || '-'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                    {student.fields.full_name_certificate || student.fields.full_name || '-'}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{student.fields.nickname || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{student.fields.name_class || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{formatDate(student.fields.date)}</td>

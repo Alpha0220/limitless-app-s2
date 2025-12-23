@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { updateStudentInAirtable, updateEmailStatus, updateDocumentField, updateRegistrationReceiptByUuid, updateRegistrationPayerByUuid, base, TABLE_NAME, REGISTRATION_TABLE_NAME } from '@/lib/airtable';
+import { login, logout } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import nodemailer from 'nodemailer';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -340,4 +342,23 @@ export async function updatePayerName(uuid: string, payerName: string) {
     console.error('Update payer name error:', error);
     return { success: false, message: 'Failed to update payer name' };
   }
+}
+export async function handleLogin(prevState: any, formData: FormData) {
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
+  const callbackUrl = formData.get('callbackUrl') as string || '/';
+
+  const success = await login(username, password);
+
+  if (success) {
+    redirect(callbackUrl);
+  } else {
+    return { success: false, message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' };
+  }
+}
+
+export async function handleLogout() {
+  await logout();
+  revalidatePath('/');
+  redirect('/login');
 }

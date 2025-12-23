@@ -45,8 +45,8 @@ export default function StudentList({
   const total = students.length;
   const completed = students.filter(s => s.fields.is_update).length;
 
-  // Initialize sale name from existing data if available
-  const initialSale = students.find(s => s.fields.name_sale)?.fields.name_sale || '';
+  // Initialize sale name from existing data if available, default to 'โฟน'
+  const initialSale = students.find(s => s.fields.name_sale)?.fields.name_sale || 'โฟน';
   const [selectedSale, setSelectedSale] = useState(initialSale);
   const [isUpdatingSale, setIsUpdatingSale] = useState(false);
 
@@ -116,8 +116,7 @@ export default function StudentList({
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-3 tracking-tight">
                 <div className="w-1.5 h-7 bg-blue-600 rounded-full shadow-sm shadow-blue-200"></div>
-                ตรวจสอบข้อมูล
-              </h3>
+                ข้อมูลนักเรียน              </h3>
               
               <div className={`
                 px-3 py-1 rounded-lg border text-[13px] font-bold transition-all duration-300 flex items-center gap-2
@@ -170,13 +169,14 @@ export default function StudentList({
                       className="appearance-none w-full bg-emerald-50/50 border border-emerald-100 text-emerald-800 text-[12px] font-bold py-2 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     >
                       <option value="">เลือกรายชื่อ...</option>
-                      {students.map(student => (
-                        student.fields.full_name && (
-                          <option key={student.id} value={student.fields.full_name}>
-                            {student.fields.full_name}
+                      {students.map(student => {
+                        const displayName = student.fields.full_name_certificate || student.fields.full_name;
+                        return displayName ? (
+                          <option key={student.id} value={displayName}>
+                            {displayName}
                           </option>
-                        )
-                      ))}
+                        ) : null;
+                      })}
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-emerald-500">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -201,6 +201,7 @@ export default function StudentList({
           {students.map((student) => {
             const isCompleted = student.fields.is_update;
             const isExpanded = expandedIds.includes(student.id);
+            const displayName = student.fields.full_name_certificate || student.fields.full_name;
 
             return (
               <div
@@ -231,12 +232,12 @@ export default function StudentList({
                       }
                       ${isExpanded && !isCompleted ? 'scale-110' : ''}
                     `}>
-                      {student.fields.full_name ? student.fields.full_name.substring(0, 1) : '?'}
+                      {displayName ? displayName.substring(0, 1) : '?'}
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3 flex-grow text-sm text-left">
                      <h3 className={`text-lg font-bold transition-colors duration-200 ${isExpanded ? 'text-blue-700' : 'text-slate-800'}`}>
-                        {student.fields.full_name || 'ไม่ระบุชื่อ'}
+                        {displayName || 'ไม่ระบุชื่อ'}
                       </h3>
 
                       <div className="flex items-center gap-3">
@@ -320,7 +321,7 @@ export default function StudentList({
               </div>
 
               <Link
-                href="/"
+                href="https://limitless-register.vercel.app"
                 className="group relative w-full sm:w-64 py-4 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-200 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
