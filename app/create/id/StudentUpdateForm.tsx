@@ -102,7 +102,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
     remark: student.fields.remark || '',
   });
 
-  const handleCopyBilling = () => {
+  const handleCopyExisting = () => {
     if (billingTemplate) {
       setBillingData({
         company_name: billingTemplate.fields.company_name || '',
@@ -110,6 +110,14 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
         tax_id: billingTemplate.fields.tax_id || '',
         bill_email: billingTemplate.fields.bill_email || '',
         tax_addres: billingTemplate.fields.tax_addres || '',
+      });
+      setFormData({
+        nickname: billingTemplate.fields.nickname || '',
+        full_name: billingTemplate.fields.full_name || '',
+        full_name_certificate: billingTemplate.fields.full_name_certificate || '',
+        phone_num: billingTemplate.fields.phone_num || '',
+        user_email: billingTemplate.fields.user_email || '',
+        remark: billingTemplate.fields.remark || '',
       });
     }
   };
@@ -159,16 +167,30 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
 
         {/* Personal Info */}
         <section>
-          <div className="flex items-center gap-3 mb-6 px-1">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+          <div className="flex items-center justify-between mb-6 px-1">
+            <div className="flex items-center gap-3 flex-grow">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-extrabold text-slate-800 tracking-tight">
+                ข้อมูลส่วนตัว
+              </h3>
+              <div className="flex-grow h-px bg-slate-200 hidden sm:block"></div>
             </div>
-            <h3 className="text-lg font-extrabold text-slate-800 tracking-tight">
-              ข้อมูลส่วนตัว
-            </h3>
-            <div className="flex-grow h-px bg-slate-200"></div>
+            {billingTemplate && !isReadOnly && billingTemplate.id !== student.id && (
+              <button
+                type="button"
+                onClick={handleCopyExisting}
+                className="text-xs flex items-center gap-1.5 text-blue-500 hover:text-blue-600 bg-white px-3 py-1.5 rounded-lg transition-all duration-200 font-bold border border-slate-100 hover:border-blue-100 shadow-sm ml-4"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+                ดึงข้อมูลเดิม
+              </button>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 px-1">
             <div className="md:col-span-2 md:w-[48%]">
@@ -244,7 +266,7 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
             {billingTemplate && !isReadOnly && billingTemplate.id !== student.id && (
               <button
                 type="button"
-                onClick={handleCopyBilling}
+                onClick={handleCopyExisting}
                 className="text-xs flex items-center gap-1.5 text-blue-500 hover:text-blue-600 bg-white px-3 py-1.5 rounded-lg transition-all duration-200 font-bold border border-slate-100 hover:border-blue-100 shadow-sm ml-4"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
