@@ -153,6 +153,9 @@ export default function StudentUpdateForm({ student, billingTemplate }: { studen
 
       <form action={formAction} className="space-y-6">
         <input type="hidden" name="recordId" value={student.id} />
+        <input type="hidden" name="name_class" value={student.fields.name_class || ''} />
+        <input type="hidden" name="date" value={student.fields.date || ''} />
+        <input type="hidden" name="uuid" value={student.fields.uuid || ''} />
 
         {/* Personal Info */}
         <section>
