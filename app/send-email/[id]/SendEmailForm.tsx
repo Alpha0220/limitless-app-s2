@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormStatus, useFormState } from 'react-dom';
-import { sendEmailWithAttachment } from '@/app/actions';
+import { sendEmailWithAttachment } from '@/actions/email';
 import { useState } from 'react';
 
 // Submit button component

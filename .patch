@@ -1,0 +1,12 @@
+Patch 2.1.0
+---
+
+Patch 2.1.1
+---
+1. **Template Email System**: เพิ่มระบบส่งอีเมลอัตโนมัติเมื่อกด "ยืนยันข้อมูล" โดยดึง Template จาก Airtable ตามคลาสและวันที่เรียน
+2. **Dynamic Variables**: รองรับการใส่ตัวแปรใน Template เช่น `{{full_name}}`, `{{date}}`, `{{full_th_date}}`, และ `{{uuid}}` (Payment Code)
+3. **Smart Matching**: ปรับปรุงการค้นหาเทมเพลตให้แม่นยำ รองรับวันที่รูปแบบ ISO และข้อมูลแบบ Array/Lookup จาก Airtable
+4. **Email UI**: เพิ่ม Header ส่วนตัว (Greeting) พร้อม Payment Code สีสันชัดเจน และรองรับ YouTube Link ท้ายเมล
+5. **Code Refactoring**: แยกไฟล์ `app/actions.ts` ออกเป็นสัดส่วนในโฟลเดอร์ `/actions` (Auth, Student, Email, Registration) เพื่อการดูแลรักษาที่ง่ายขึ้น
+6. **Security & Config**: ย้ายความลับ (Cloudinary/API Keys) ไปใช้ Environment Variables แทนการ Hardcode
+---
