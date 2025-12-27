@@ -1,13 +1,15 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { updateStudentInAirtable, updateEmailStatus, updateDocumentField } from '@/lib/airtable';
+import { updateStudentInAirtable, updateEmailStatus, updateDocumentField, base, TABLE_NAME } from '@/lib/airtable';
 import { transporter, cloudinary } from './config';
+import { findTemplateEmail } from './student';
 
 export async function sendEmailWithAttachment(prevState: any, formData: FormData) {
   const recordId = formData.get('recordId') as string;
   const billEmail = formData.get('bill_email') as string;
   const file = formData.get('attachment') as File;
+  const name_class = formData.get('name_class') as string;
 
   // Extract Structured Content
   const subject = formData.get('email_subject') as string || 'ใบเสร็จรับเงิน/ใบกำกับภาษี';
