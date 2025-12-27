@@ -8,7 +8,7 @@ import { transporter } from './config';
  * Filter and find a matching active template email
  * Fetches active templates and filters in JS for maximum reliability with lookup/array fields
  */
-async function findTemplateEmail(nameClass: string, date: string) {
+export async function findTemplateEmail(nameClass: string, date: string) {
   try {
     // Standardize input date to YYYY-MM-DD
     const inputDate = date.includes('T') ? date.split('T')[0] : date.replace(/\//g, '-');
