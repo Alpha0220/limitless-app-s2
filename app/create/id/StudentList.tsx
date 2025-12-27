@@ -5,7 +5,8 @@ import Link from 'next/link';
 import StudentUpdateForm from './StudentUpdateForm';
 import SlipUpload from './SlipUpload';
 import { formatDate } from '@/lib/utils';
-import { updateSaleName, updatePayerName } from '@/app/actions';
+import { updateSaleName } from '@/actions/student';
+import { updatePayerName } from '@/actions/registration';
 
 interface StudentData {
   id: string;

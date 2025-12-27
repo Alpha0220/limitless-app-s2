@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import { handleLogin } from '@/app/actions';
+import { handleLogin } from '@/actions/auth';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
