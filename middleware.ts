@@ -7,8 +7,8 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Define Public Routes
-  // Allow access to /create/id and its sub-paths
-  if (pathname.startsWith('/create/id')) {
+  // Allow access to /create/id and /test and their sub-paths
+  if (pathname.startsWith('/create/id') || pathname.startsWith('/test')) {
     return NextResponse.next();
   }
 

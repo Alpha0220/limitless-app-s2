@@ -10,6 +10,7 @@ export const base = new Airtable({
 }).base(process.env.AIRTABLE_BASE_ID);
 export const TABLE_NAME = 'BillingInformation';
 export const REGISTRATION_TABLE_NAME = 'Registration';
+export const TEMPLATE_EMAIL_TABLE_NAME = 'Template Email';
 
 // Retry configuration
 const MAX_RETRIES = 3;
@@ -86,6 +87,19 @@ export interface StudentRecord {
     is_update?: boolean;
     is_email_sent?: 'success' | 'fail' | 'pending';
     Document?: { url: string; filename: string }[]; // Changed to Capitalized 'Document'
+  };
+}
+
+export interface TemplateEmailRecord {
+  id: string;
+  fields: {
+    Id: number;
+    Date?: string | string[]; // Can be a string or array if linked/lookup
+    Template?: string;
+    'Last Updated'?: string;
+    'Is Active'?: boolean;
+    'Link Youtube'?: string;
+    class_name?: string | string[];
   };
 }
 
@@ -432,4 +446,30 @@ export async function updateRegistrationPayerByUuid(uuid: string, payerName: str
       throw error;
     }
   }, `updateRegistrationPayerByUuid(${uuid})`);
+}
+
+export async function getTemplateEmails(): Promise<TemplateEmailRecord[]> {
+  return retryWithBackoff(async () => {
+    try {
+      const records = await base(TEMPLATE_EMAIL_TABLE_NAME).select({
+        view: 'Grid view',
+      }).all();
+
+      return records.map(record => ({
+        id: record.id,
+        fields: record.fields as TemplateEmailRecord['fields'],
+      }));
+    } catch (error: any) {
+      console.error(`Error fetching template emails:`, error);
+      // If Grid view doesn't exist, try without view
+      if (error?.message?.includes('view')) {
+        const records = await base(TEMPLATE_EMAIL_TABLE_NAME).select().all();
+        return records.map(record => ({
+          id: record.id,
+          fields: record.fields as TemplateEmailRecord['fields'],
+        }));
+      }
+      throw error;
+    }
+  }, 'getTemplateEmails').catch(() => []);
 }
