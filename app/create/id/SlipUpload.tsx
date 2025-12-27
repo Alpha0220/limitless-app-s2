@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { uploadSlips } from '@/app/actions';
+import { uploadSlips } from '@/actions/registration';
 
 interface SlipUploadProps {
   uuid: string;

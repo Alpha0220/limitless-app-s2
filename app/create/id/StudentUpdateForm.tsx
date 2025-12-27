@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormStatus, useFormState } from 'react-dom';
-import { updateStudent } from '@/app/actions';
+import { updateStudent } from '@/actions/student';
 import { useEffect, useState } from 'react';
 
 // Submit button component for pending state
